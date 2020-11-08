@@ -33,7 +33,7 @@ ts = adafruit_touchscreen.Touchscreen(board.TOUCH_XL, board.TOUCH_XR,
                                       size=(screen_width, screen_height))
 
 rootgroup = displayio.Group(max_size=10)
-rootgroup.append(Rect(x=0, y=0, width=320, height=240, fill=0xAAAAFF))
+rootgroup.append(Rect(x=0, y=0, width=320, height=240, fill=0xFFDEB7))
 rootgroup.append(label.Label(font, text="Welcome",
                              color=0xFFFFFF, x=120, y=120))
 
@@ -148,7 +148,7 @@ class GrindSettings(SubScreen):
         self.selected = False
 
         self.grindLabel = label.Label(
-            font, text=str(self.grindAmount), color=0xFFFFFF)
+            font, text=str(self.grindAmount), color=0x000000)
         self.grindLabel.x = 70
         self.grindLabel.y = 130
         self.dgroup.append(self.grindLabel)
