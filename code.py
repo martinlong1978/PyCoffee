@@ -242,6 +242,7 @@ class ProgressScreen(Screen):
         self.bar.progress = progress / 100
 
     def cancel(self):
+        print(f"Cancelling")
         self.stopGrind()
 
     def grindFor(self, seconds):
@@ -254,13 +255,13 @@ class ProgressScreen(Screen):
         grindctl.value = True
         self.bar.progress = 0.0
         self.dgroup.append(self.bargroup)
-        self.dgroup.append(self.cancelButton)
+        self.showButton(self.cancelButton)
         self.grinding = True
 
     def stopGrind(self):
         grindctl.value = False
         self.dgroup.remove(self.bargroup)
-        self.dgroup.remove(self.cancelButton)
+        self.hideButton(self.cancelButton)
         self.grinding = False
 
     def doneGrind(self):
@@ -328,12 +329,12 @@ class SetupScreen(ProgressScreen):
 
     def start(self):
         if(self.stage == 0):
-            self.dgroup.remove(self.startButton)
+            self.hideButton(self.startButton)
             self.grindFor(initialgrid)
         elif(self.stage == 1):
             self.rate = initialgrid / (self.grams / 10)
             self.saveValue()
-            self.dgroup.remove(self.topupButton)
+            self.hideButton(self.topupButton)
             runfor = (19 - (self.grams / 10)) * self.rate
             self.grindFor(runfor)
 
@@ -342,7 +343,7 @@ class SetupScreen(ProgressScreen):
 
     def doneGrind(self):
         if self.stage == 0:
-            self.dgroup.append(self.topupButton)
+            self.showButton(self.topupButton)
             self.stage = 1
             self.showButton(self.gramsUp)
             self.showButton(self.gramsDown)
@@ -350,7 +351,7 @@ class SetupScreen(ProgressScreen):
             self.showButton(self.milisDown)
             self.dgroup.append(self.gLabel)
         elif self.stage == 1:
-            self.dgroup.append(self.startButton)
+            self.showButton(self.startButton)
             self.stage = 0
             self.active = False
             self.hideButton(self.gramsUp)
@@ -358,6 +359,15 @@ class SetupScreen(ProgressScreen):
             self.hideButton(self.milisUp)
             self.hideButton(self.milisDown)
             self.dgroup.remove(self.gLabel)
+
+            
+    def cancel(self):
+        print(f"Cancelling")
+        self.stopGrind()
+        if(self.stage == 0) :
+            self.doneGrind()
+            self.hideButton(self.topupButton)
+        self.doneGrind()
 
 
 class GrindScreen(ProgressScreen):
@@ -377,6 +387,11 @@ class GrindScreen(ProgressScreen):
     def grindGrams(self, grams):
         self.loadValue()
         self.grindFor(self.rate * grams)
+
+    def cancel(self):
+        print(f"Cancelling")
+        self.stopGrind()
+        self.active = False
 
 
 ms = MainScreen()
